@@ -1,0 +1,12 @@
+pharm_name,drug_name,pharm_id,drug_id
+Moonlight Pharmacy,amoxicillin,1,1
+Pat Pharmacy,amoxicillin,2,1
+Silverpharma,amoxicillin,4,1
+KalaMed Pharmacy,amoxicillin,5,1
+Pat Pharmacy,paracetamol,2,2
+Pida Pharmacy,paracetamol,3,2
+Silverpharma,paracetamol,4,2
+Moonlight Pharmacy,ciprofloxacin,1,3
+Pida Pharmacy,ciprofloxacin,3,3
+Silverpharma,ciprofloxacin,4,3
+KalaMed Pharmacy,ciprofloxacin,5,3
