@@ -2,16 +2,19 @@
   display: flex;
   width: 100%;
   margin-bottom: 1rem;
+  min-width: 0; /* Allow flex container to shrink */
 }
 
 .search-bar__input {
   flex: 1;
+  min-width: 0; /* Allow input to shrink below content size */
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
   border-right: none;
   border-radius: 10px 0 0 10px;
   font-size: 1rem;
   outline: none;
+  box-sizing: border-box;
 }
 
 .search-bar__input:focus {
@@ -30,8 +33,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0; /* Prevent button from shrinking */
+  min-width: 44px; /* Ensure button is always tappable */
+  box-sizing: border-box;
 }
 
 .search-bar__button:hover {
   background: #f5f5f5;
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  .search-bar__input {
+    padding: 0.5rem 0.75rem;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .search-bar__button {
+    padding: 0 0.75rem;
+    min-width: 40px;
+  }
 }

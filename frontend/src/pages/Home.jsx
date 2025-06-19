@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar';
 import RadiusSlider from '../components/RadiusSlider';
+import './Home.css';
 
 export default function Home() {
     // set up state hooks
@@ -26,9 +27,9 @@ export default function Home() {
     };
 
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
+        <div className="home-container">
             {/* Left Panel */}
-            <div style={{ width: '25%', padding: '1rem', background: '#fafafa', boxSizing: 'border-box' }}>
+            <div className="left-panel">
                 <SearchBar value={searchTerm} onChange={setSearchTerm} onSearch={handleSearch} />
                 <RadiusSlider radius={radius} onChange={handleRadiusChange} />
                 {/* <ResultsList
@@ -39,8 +40,8 @@ export default function Home() {
             </div>
 
             {/* Map Panel */}
-            <div style={{ flex: 1, position: 'relative' }}>
-                <div style={{ width: '100%', height: '100%', display: 'flex', background: '#e0e0e0', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
+            <div className="map-panel">
+                <div className="map-content">
                 Map will go here!
                 </div>
             </div>
