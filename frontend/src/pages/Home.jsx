@@ -1,21 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar';
 import RadiusSlider from '../components/RadiusSlider';
+import MapView from '../components/MapView';
 import './Home.css';
 
 export default function Home() {
     // set up state hooks
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');  // term to search for
     const [radius, setRadius] = useState(10); // default rad = 10 km
+    const [pharmacies, setPharmacies] = useState([]);
+    const [userLocation, setUserLocation] = useState({ lat: 6.688, lng: -1.642 }); // default to Kumasi if geolocation fails
 
+    // attempt browser geolocation
+    // useEffect(() => {
+    //     if (navigator.geolocation) {
+    //         navigator.geolocation.getCurrentPosition(
+    //             ({ coords }) => setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
+    //             () => {
+    //                 console.warn('Geolocation failed — using default Kumasi coords');
+    //                 }); // keeps default
+    //     }
+    // }, []); 
+    
     // when the user submits a new search
-    const handleSearch = (term) => {
-        console.log(`Searching for: ${term} within ${radius}km`);
+    const handleSearch = async (term) => {
         setSearchTerm(term);
-        // TODO: trigger your API call here using `term`, `radius`, and geolocation
-        // fetch(`${process.env.REACT_APP_API_BASE_URL}/api/search?medicine=${term}&lat=${userLocation.lat}&lng=${userLocation.lng}&radius=${radius}`)
-        //   .then(res => res.json())
-        //   .then(data => setResults(data.results));
+        try {
+            const res = await fetch(
+                `${process.env.REACT_APP_API_BASE_URL}/api/search` +
+                `?medicine=${encodeURIComponent(term)}` +
+                `&lat=${userLocation.lat}` +
+                `&lng=${userLocation.lng}` +
+                `&radius=${radius}`
+            );
+            const data = await res.json();
+            setPharmacies(data.results); // assume data.results is our array of { pharmacy_id, name, address, lat, lng, distance_km }
+        } catch (err) {
+            console.error('Error fetching pharmacies: ', err);
+        }
     };
 
     // live update results when radius is changed
@@ -42,7 +64,7 @@ export default function Home() {
             {/* Map Panel */}
             <div className="map-panel">
                 <div className="map-content">
-                Map will go here!
+                <MapView userLocation={userLocation} pharmacies={pharmacies}/>
                 </div>
             </div>
         </div>
