@@ -1,144 +1,187 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useJsApiLoader, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 
-// building public urls for icons 
-const USER_ICON_URL = process.env.PUBLIC_URL + '/images/user-icon.svg';
+// static urls for marker icons 
+const USER_ICON_URL  = process.env.PUBLIC_URL + '/images/user-icon.svg';
 const PHARM_ICON_URL = process.env.PUBLIC_URL + '/images/pharm-icon.svg';
 
 // container and default options
-const containerStyle = { width: '100%', height: '100%' }; // Map container styles
-const DEFAULT_ZOOM = 15; // zoom level
-const libraries = ['places'];   // load Places library
+const containerStyle = { width: '100%', height: '100%' };
+const DEFAULT_ZOOM    = 15;
+const libraries       = ['places'];
 
 export default function MapView({ userLocation, pharmacies }) {
-  // load the maps and places script 
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries
   });  
 
   const [map, setMap] = useState(null);
-  const [markers, setMarkers] = useState([]);          // { pharmacy_id, placeId, position }
-  const [selected, setSelected] = useState(null);      // { place, markerPosition }
+  // Store custom marker instances & their data
+  const markersRef = useRef([]);
+  // State for the currently selected pharmacy info window
+  const [selectedPharmacy, setSelectedPharmacy] = useState(null);
 
   // onLoad callback for GoogleMap
   const onLoad = useCallback((mapInstance) => {
     setMap(mapInstance);
-    // Center map on userLocation initially
     mapInstance.panTo(userLocation);
     mapInstance.setZoom(DEFAULT_ZOOM);
   }, [userLocation]);
 
-  // build markers whenever `pharmacies` or `map` changes
   useEffect(() => {
-    if (!map || pharmacies.length === 0) {
-      setMarkers([]);
-      return;
-    }
+    if (!isLoaded || !map) return;
 
-    // take the 15 closest by distance_km
+    // 1) Clear existing markers
+    markersRef.current.forEach(({ marker }) => {
+      try { marker.setMap(null); }
+      catch (err) { console.error('Error clearing marker:', err); }
+    });
+    markersRef.current = [];
+    // Also reset any open InfoWindow
+    setSelectedPharmacy(null);
+
+    if (!pharmacies.length) return;
+
+    // 2) Limit to 15 closest
     const topList = [...pharmacies]
-      .sort((a, b) => a.distance_km - b.distance_km)
-      .slice(0, 15);
+      .sort((a,b)=>a.distance_km - b.distance_km)
+      .slice(0,15);
 
-    // use the PlacesService for text-to-place lookup
     const service = new window.google.maps.places.PlacesService(map);
-    const newMarkers = [];
+    let completed = 0;
 
     topList.forEach((pharm, idx) => {
       const query = `${pharm.name} ${pharm.address}`;
-      service.findPlaceFromQuery(
-        { query, fields: ['place_id', 'geometry'] },
-        (results, status) => {
-          if (
-            status === window.google.maps.places.PlacesServiceStatus.OK &&
-            results &&
-            results[0]
-          ) {
-            const place = results[0];
-            newMarkers.push({
-              pharmacy_id: pharm.pharmacy_id,
-              placeId: place.place_id,
-              position: place.geometry.location
-            });
-          } else {
-            console.warn('Places lookup failed for', query, status);
-          }
+      try {
+        service.findPlaceFromQuery(
+          { query, fields:['place_id','geometry'] },
+          (results, status) => {
+            completed += 1;
+            if (status === window.google.maps.places.PlacesServiceStatus.OK
+                && results && results[0]) {
+              try {
+                const place = results[0];
+                // Create custom marker
+                const marker = new window.google.maps.Marker({
+                  map,
+                  position: place.geometry.location,
+                  icon:{
+                    url: PHARM_ICON_URL,
+                    scaledSize: new window.google.maps.Size(32,32)
+                  }
+                });
 
-          // once we've processed all, update state & adjust viewport
-          if (newMarkers.length + (topList.length - idx - 1) === topList.length) {
-            setMarkers(newMarkers);
-            // show user + first marker together
-            const bounds = new window.google.maps.LatLngBounds();
-            bounds.extend(userLocation);
-            bounds.extend(newMarkers[0].position);
-            map.fitBounds(bounds, 50);
+                // On click, fetch place details and show InfoWindow
+                marker.addListener('click', () => {
+                  const detailService = new window.google.maps.places.PlacesService(map);
+                  detailService.getDetails(
+                    {
+                      placeId: place.place_id,
+                      fields:['name','formatted_address']
+                    },
+                    (placeInfo, st) => {
+                      if (st === window.google.maps.places.PlacesServiceStatus.OK) {
+                        setSelectedPharmacy({
+                          pharmacy: pharm,
+                          position: place.geometry.location,
+                          placeInfo
+                        });
+                      }
+                    }
+                  );
+                });
+
+                // Save for cleanup
+                markersRef.current.push({ marker, pharm });
+
+              } catch(mkErr){
+                console.error('Error creating marker for',pharm, mkErr);
+              }
+            } else {
+              console.warn('Places lookup failed for', pharm.name, status);
+            }
+
+            // after all processed, adjust viewport
+            if (completed === topList.length && markersRef.current.length) {
+              try {
+                const bounds = new window.google.maps.LatLngBounds();
+                bounds.extend(userLocation);
+                const pos = markersRef.current[0].marker.getPosition();
+                bounds.extend(pos);
+                map.fitBounds(bounds,50);
+              } catch(bErr){
+                console.error('Error fitting bounds:',bErr);
+              }
+            }
           }
-        }
-      );
-    });
-  }, [map, pharmacies, userLocation]);
-  
-  // click handler: fetch minimal details and open InfoWindow
-  const handleMarkerClick = (marker) => {
-    const service = new window.google.maps.places.PlacesService(map);
-    service.getDetails(
-      {
-        placeId: marker.placeId,
-        fields: ['name', 'formatted_address'] // restrict to just name + address
-      },
-      (place, status) => {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-          setSelected({ place, position: marker.position });
-        }
+        );
+      } catch(srvErr){
+        console.error('PlacesService error for', pharm.name, srvErr);
+        completed +=1;
       }
-    );
-  };
+    });
+  }, [isLoaded, map, pharmacies, userLocation]);
 
-  // render loading / error states while Maps JS is loading
   if (loadError) return <div>Error loading Google Maps</div>;
   if (!isLoaded) return <div>Loading map…</div>;
-  
+
   return (
     <GoogleMap
-    mapContainerStyle={containerStyle}
-    onLoad={onLoad}
-    options={{ disableDefaultUI: true, zoomControl: true }}
+      mapContainerStyle={containerStyle}
+      onLoad={onLoad}
+      options={{ disableDefaultUI:true, zoomControl:true }}
     >
-    {/* 4) User location marker */}
-    <Marker
+      {/* User location */}
+      <Marker
         position={userLocation}
         icon={{
-        url: USER_ICON_URL,
-        scaledSize: new window.google.maps.Size(32, 32)
+          url: USER_ICON_URL,
+          scaledSize: new window.google.maps.Size(32,32)
         }}
-    />
+      />
 
-    {/* 5) Pharmacy markers */}
-    {markers.map((m) => (
-        <Marker
-        key={m.placeId}
-        position={m.position}
-        icon={{
-            url: PHARM_ICON_URL,
-            scaledSize: new window.google.maps.Size(32, 32)
-        }}
-        onClick={() => handleMarkerClick(m)}
-        />
-    ))}
-
-    {/* 6) InfoWindow */}
-    {selected && (
+      {/* Controlled InfoWindow */}
+      {selectedPharmacy && (
         <InfoWindow
-        position={selected.position}
-        onCloseClick={() => setSelected(null)}
+          position={selectedPharmacy.position}
+          onCloseClick={() => setSelectedPharmacy(null)}
         >
-        <div style={{ maxWidth: '200px' }}>
-            <h4 style={{ margin: '0 0 0.5rem 0' }}>{selected.place.name}</h4>
-            <p style={{ margin: 0 }}>{selected.place.formatted_address}</p>
-        </div>
+          <div style={{ fontFamily:'Arial, sans-serif', maxWidth:'240px' }}>
+            <h3 style={{
+              margin:'0 0 0.5rem',
+              fontSize:'1.1rem',
+              fontWeight:'bold'
+            }}>{selectedPharmacy.pharmacy.name}</h3>
+            <p style={{ margin:'0.25rem 0' }}>
+              {selectedPharmacy.placeInfo.formatted_address}
+            </p>
+            <p style={{ margin:'0.25rem 0' }}>
+                <strong>Drug:</strong>{' '}
+                {(() => {
+                    const raw = selectedPharmacy.pharmacy.matched_drugs[0] || '';
+                    return raw.charAt(0).toUpperCase() + raw.slice(1);
+                })()}
+            </p>
+            <p style={{ margin:'0.25rem 0' }}>
+              <strong>Distance:</strong> {parseFloat(selectedPharmacy.pharmacy.distance_km).toFixed(2)} km
+            </p>
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&origin=${
+                userLocation.lat},${userLocation.lng
+              }&destination=${
+                selectedPharmacy.position.lat()},${selectedPharmacy.position.lng()
+              }`}
+              target="_blank" rel="noopener noreferrer"
+              style={{
+                color:'#4285f4',
+                textDecoration:'none',
+                fontWeight:'bold'
+              }}
+            >Get Directions</a>
+          </div>
         </InfoWindow>
-    )}
+      )}
     </GoogleMap>
   );
 }
