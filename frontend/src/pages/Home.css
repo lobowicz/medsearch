@@ -65,7 +65,7 @@
 .info-logo {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   text-decoration: none; 
 }
 
@@ -78,13 +78,16 @@
 .info-logo span {
   font-size: 1.75rem;
   font-weight: bold;
-  color: #333;
+  background: linear-gradient(135deg, #4285f4, #34a853);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .info-text {
   font-size: 0.95rem;
   line-height: 1.5;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .inline-icon {
@@ -96,7 +99,7 @@
 
 .info-thanks {
   font-size: 0.9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   font-style: italic;
   text-align: center;
 }
@@ -106,7 +109,7 @@
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .info-logos img {
@@ -117,20 +120,27 @@
 .info-disclaimer {
   font-size: 0.8rem;
   color: #666;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
 .info-contact {
   font-size: 0.9rem;
   text-align: center;
+  padding: 1rem;
+  background: rgba(66, 133, 244, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(66, 133, 244, 0.2);
 }
 
 .info-contact a {
   color: #4285f4;
   text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
 }
 
 .info-contact a:hover {
+  color: #3367d6;
   text-decoration: underline;
 }
