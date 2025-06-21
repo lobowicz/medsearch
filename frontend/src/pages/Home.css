@@ -55,3 +55,75 @@
     padding: 0.5rem;
   }
 }
+
+.info-section {
+  margin-top: 2rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+.info-logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.info-logo img {
+  height: 24px;
+  width: 24px;
+  margin-right: 0.5rem;
+}
+
+.info-logo span {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.info-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.inline-icon {
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+}
+
+.info-thanks {
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.info-logos {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.info-logos img {
+  height: 28px;
+  width: auto;
+}
+
+.info-disclaimer {
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.info-contact {
+  font-size: 0.85rem;
+}
+
+.info-contact a {
+  color: #4285f4;
+  text-decoration: none;
+}
+
+.info-contact a:hover {
+  text-decoration: underline;
+}

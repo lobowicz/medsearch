@@ -16,9 +16,8 @@ export default function Home() {
     //     if (navigator.geolocation) {
     //         navigator.geolocation.getCurrentPosition(
     //             ({ coords }) => setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
-    //             () => {
-    //                 console.warn('Geolocation failed — using default Kumasi coords');
-    //                 }); // keeps default
+    //             () => console.warn('Geolocation failed — using default Kumasi coords');
+    //         );
     //     }
     // }, []); 
     
@@ -43,25 +42,51 @@ export default function Home() {
     // live update results when radius is changed
     const handleRadiusChange = (newRadius) => {
         setRadius(newRadius);
-        if (searchTerm) {
-            handleSearch(searchTerm);
-        }
+        if (searchTerm) handleSearch(searchTerm);
     };
 
     return (
         <div className="home-container">
-            {/* Left Panel */}
             <div className="left-panel">
                 <SearchBar value={searchTerm} onChange={setSearchTerm} onSearch={handleSearch} />
                 <RadiusSlider radius={radius} onChange={handleRadiusChange} />
-                {/* <ResultsList
-                    pharmacies={results}
-                    onHover={...}
-                    onClick={...}
-                /> */}
+                <div className="info-section">
+                    <div className="info-logo">
+                        <img src={process.env.PUBLIC_URL + '/images/logo.png'} alt="MedSearch logo" />
+                        <span>MedSearch</span>
+                    </div>
+                    
+                    <p className="info-text">
+                        Search the name of a medicine and MedSearch will identify and highlight nearby pharmacies that
+                        stock your prescription, and accept Ghana’s National Health Insurance card for prescriptions. You can adjust the search radius to your preference. 
+                        Click on the pharmacy markers&nbsp;
+                        <img src={process.env.PUBLIC_URL + '/images/pharm-icon.svg'} alt="Pharmacy icon" className="inline-icon" />
+                        &nbsp;to get directions from your location&nbsp;
+                        <img src={process.env.PUBLIC_URL + '/images/user-icon.svg'} alt="You icon" className="inline-icon" />. 
+                    </p>
+                    
+                    <p className="info-thanks">
+                        We're grateful to the Ghana NHIS, UNICEF Ghana, and Dr. Michael Allotey for their invaluable support in bringing this project to life.
+                    </p>
+                    
+                    <div className="info-logos">
+                        <img src={process.env.PUBLIC_URL + '/images/ghana-flag.png'} alt="Ghana flag" />
+                        <img src={process.env.PUBLIC_URL + '/images/nhis-logo.png'} alt="NHIS logo" />
+                        <img src={process.env.PUBLIC_URL + '/images/unicef-logo-2.png'} alt="UNICEF logo" />
+                        <img src={process.env.PUBLIC_URL + '/images/logo.png'} alt="MedSearch logo" />
+                    </div>
+                    
+                    <p className="info-disclaimer">
+                        Currently covering regions in Ghana - more countries soon.
+                    </p>
+
+                    <p className="info-contact">
+                        Have feedback or questions? Email:&nbsp;
+                        <a href="mailto:support@medsearch.gh">support@medsearch.gh</a>
+                    </p>
+                </div>
             </div>
 
-            {/* Map Panel */}
             <div className="map-panel">
                 <div className="map-content">
                 <MapView userLocation={userLocation} pharmacies={pharmacies}/>
