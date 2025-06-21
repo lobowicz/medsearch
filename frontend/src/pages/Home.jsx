@@ -17,7 +17,7 @@ export default function Home() {
     //     if (navigator.geolocation) {
     //         navigator.geolocation.getCurrentPosition(
     //             ({ coords }) => setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
-    //             () => console.warn('Geolocation failed — using default Kumasi coords');
+    //             () => {console.warn('Geolocation failed — using default Kumasi coords');}
     //         );
     //     }
     // }, []); 
