@@ -68,7 +68,7 @@ export default function MapView({ userLocation, pharmacies }) {
                   position: place.geometry.location,
                   icon:{
                     url: PHARM_ICON_URL,
-                    scaledSize: new window.google.maps.Size(32,32)
+                    scaledSize: new window.google.maps.Size(36,36)
                   }
                 });
 
@@ -137,7 +137,7 @@ export default function MapView({ userLocation, pharmacies }) {
         position={userLocation}
         icon={{
           url: USER_ICON_URL,
-          scaledSize: new window.google.maps.Size(32,32)
+          scaledSize: new window.google.maps.Size(48,48)
         }}
       />
 
