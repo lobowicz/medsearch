@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import RadiusSlider from '../components/RadiusSlider';
 import MapView from '../components/MapView';
@@ -51,10 +52,10 @@ export default function Home() {
                 <SearchBar value={searchTerm} onChange={setSearchTerm} onSearch={handleSearch} />
                 <RadiusSlider radius={radius} onChange={handleRadiusChange} />
                 <div className="info-section">
-                    <div className="info-logo">
+                    <Link to="/" className="info-logo">
                         <img src={process.env.PUBLIC_URL + '/images/logo.png'} alt="MedSearch logo" />
                         <span>MedSearch</span>
-                    </div>
+                    </Link>
                     
                     <p className="info-text">
                         Search the name of a medicine and MedSearch will identify and highlight nearby pharmacies that
@@ -66,7 +67,7 @@ export default function Home() {
                     </p>
                     
                     <p className="info-thanks">
-                        We're grateful to the Ghana NHIS, UNICEF Ghana, and Dr. Michael Allotey for their invaluable support in bringing this project to life.
+                        We're grateful to the Ghana NHIS, UNICEF Ghana, and Nirav Shah for the invaluable support in bringing this project to life.
                     </p>
                     
                     <div className="info-logos">
