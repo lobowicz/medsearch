@@ -66,57 +66,64 @@
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+  text-decoration: none; 
 }
 
 .info-logo img {
-  height: 24px;
-  width: 24px;
+  height: 32px;
+  width: 32px;
   margin-right: 0.5rem;
 }
 
 .info-logo span {
-  font-size: 1.25rem;
+  font-size: 1.75rem;
   font-weight: bold;
+  color: #333;
 }
 
 .info-text {
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.95rem;
+  line-height: 1.5;
   margin-bottom: 1rem;
 }
 
 .inline-icon {
   vertical-align: middle;
-  height: 16px;
-  width: 16px;
+  height: 18px;
+  width: 18px;
+  margin: 0 2px;
 }
 
 .info-thanks {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   margin-bottom: 1rem;
   font-style: italic;
+  text-align: center;
 }
 
 .info-logos {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
   margin-bottom: 1rem;
 }
 
 .info-logos img {
-  height: 28px;
+  height: 40px;
   width: auto;
 }
 
 .info-disclaimer {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: #666;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
 .info-contact {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 .info-contact a {

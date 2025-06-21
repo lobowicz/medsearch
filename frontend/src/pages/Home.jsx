@@ -59,7 +59,10 @@ export default function Home() {
                     
                     <p className="info-text">
                         Search the name of a medicine and MedSearch will identify and highlight nearby pharmacies that
-                        stock your prescription, and accept Ghana’s National Health Insurance card for prescriptions. You can adjust the search radius to your preference. 
+                        stock your prescription AND accept Ghana’s National Health Insurance card for prescriptions. 
+                        <br></br>
+                        Adjust the search radius to your preference. 
+                        <br></br>
                         Click on the pharmacy markers&nbsp;
                         <img src={process.env.PUBLIC_URL + '/images/pharm-icon.svg'} alt="Pharmacy icon" className="inline-icon" />
                         &nbsp;to get directions from your location&nbsp;
@@ -68,6 +71,11 @@ export default function Home() {
                     
                     <p className="info-thanks">
                         We're grateful to the Ghana NHIS, UNICEF Ghana, and Nirav Shah for the invaluable support in bringing this project to life.
+                    </p>
+
+                    <p className="info-contact">
+                        Have feedback or questions? Email:&nbsp;
+                        <a href="mailto:support@medsearch.gh">support@medsearch.gh</a>
                     </p>
                     
                     <div className="info-logos">
@@ -79,11 +87,6 @@ export default function Home() {
                     
                     <p className="info-disclaimer">
                         Currently covering regions in Ghana - more countries soon.
-                    </p>
-
-                    <p className="info-contact">
-                        Have feedback or questions? Email:&nbsp;
-                        <a href="mailto:support@medsearch.gh">support@medsearch.gh</a>
                     </p>
                 </div>
             </div>
