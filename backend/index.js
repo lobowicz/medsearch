@@ -57,7 +57,7 @@ app.get('/api/search', async (req, res) => {
             )
       GROUP BY p.id, p.name, p.address, p.geom
       ORDER BY distance_km
-      LIMIT 30;
+      LIMIT 50;
     `;
 
     const { rows } = await pool.query(q, [
