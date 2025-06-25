@@ -81,6 +81,25 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
+// autocomplete api/suggest
+app.get('api/suggest', async (req, res) => {
+  try {
+    const { prefix } = req.query;
+    if (!prefix || prefix.trim().length < 2) {  // suggest when length >= 2
+      return res.json({ suggestions: [] });
+    }
+
+    // search through drugs.name
+    const q = `SELECT name FROM drugs WHERE name ILIKE $1 ORDER BY name LIMIT 10`;
+    const { rows } = await pool.query(q, [`${prefix.trim()}%`]);
+    const suggestions = rows.map(r => r.name);
+    res.json({ suggestions });
+  } catch (err) {
+    console.error('Suggest error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // 3) Start server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

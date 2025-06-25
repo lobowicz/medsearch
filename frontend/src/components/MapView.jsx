@@ -43,10 +43,10 @@ export default function MapView({ userLocation, pharmacies }) {
 
     if (!pharmacies.length) return;
 
-    // 2) Limit to 15 closest
+    // 2) Limit to 30 closest
     const topList = [...pharmacies]
       .sort((a,b)=>a.distance_km - b.distance_km)
-      .slice(0,15);
+      .slice(0,30);
 
     const service = new window.google.maps.places.PlacesService(map);
     let completed = 0;
