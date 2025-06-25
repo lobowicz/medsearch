@@ -82,7 +82,7 @@ app.get('/api/search', async (req, res) => {
 });
 
 // 2.5) autocomplete api/suggest
-app.get('api/suggest', async (req, res) => {
+app.get('/api/suggest', async (req, res) => {
   try {
     const { prefix } = req.query;
     if (!prefix || prefix.trim().length < 2) {  // suggest when length >= 2
