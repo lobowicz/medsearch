@@ -81,7 +81,7 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// autocomplete api/suggest
+// 2.5) autocomplete api/suggest
 app.get('api/suggest', async (req, res) => {
   try {
     const { prefix } = req.query;
