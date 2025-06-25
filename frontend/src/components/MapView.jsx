@@ -7,7 +7,7 @@ const PHARM_ICON_URL = process.env.PUBLIC_URL + '/images/pharm-icon.svg';
 
 // container and default options
 const containerStyle = { width: '100%', height: '100%' };
-const DEFAULT_ZOOM    = 15;
+const DEFAULT_ZOOM    = 13;
 const libraries       = ['places'];
 
 export default function MapView({ userLocation, pharmacies }) {

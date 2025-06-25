@@ -11,11 +11,12 @@ export default function SearchBar({
   onSearch,
   placeholder = 'Search for a medicine...'
 }) {
-  const [suggestions, setSuggestions]   = useState([]);
-  const [loading, setLoading]           = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [suggestions, setSuggestions]     = useState([]);
+  const [loading, setLoading]             = useState(false);
+  const [showDropdown, setShowDropdown]   = useState(false);
+  const [allowSuggest, setAllowSuggest]   = useState(false);
 
-  // 1) Debounced suggestions fetch (no deps needed)
+  // Debounced fetch
   const fetchSuggestions = useMemo(() =>
     debounce(async (input) => {
       setLoading(true);
@@ -33,10 +34,11 @@ export default function SearchBar({
         setShowDropdown(true);
       }
     }, 300)
-  , []);  // empty deps: API_BASE is static
+  , []);
 
-  // 2) Trigger or cancel debounce on `value` changes
+  // Autocomplete effect
   useEffect(() => {
+    if (!allowSuggest) return;
     if (value.trim().length >= 2) {
       fetchSuggestions(value.trim());
     } else {
@@ -45,21 +47,23 @@ export default function SearchBar({
       setShowDropdown(false);
       setLoading(false);
     }
-  }, [value, fetchSuggestions]);
+  }, [value, allowSuggest, fetchSuggestions]);
 
-  // 3) Cleanup on unmount
+  // Cleanup
   useEffect(() => () => fetchSuggestions.cancel(), [fetchSuggestions]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       onSearch(value);
       setShowDropdown(false);
+      setAllowSuggest(false);
     }
   };
 
   const handleSelect = (sugg) => {
     onChange(sugg);
     setShowDropdown(false);
+    setAllowSuggest(false);
     onSearch(sugg);
   };
 
@@ -71,7 +75,10 @@ export default function SearchBar({
           type="text"
           placeholder={placeholder}
           value={value}
-          onChange={e => onChange(e.target.value)}
+          onChange={e => {
+            onChange(e.target.value);
+            setAllowSuggest(true);
+          }}
           onKeyDown={handleKeyDown}
           autoComplete="off"
         />
@@ -80,6 +87,7 @@ export default function SearchBar({
           onClick={() => {
             onSearch(value);
             setShowDropdown(false);
+            setAllowSuggest(false);
           }}
           aria-label="Search"
         >
@@ -96,13 +104,13 @@ export default function SearchBar({
           {loading ? (
             <div className="search-suggestion-item">Loading...</div>
           ) : suggestions.length > 0 ? (
-            suggestions.map((sugg, i) => (
+            suggestions.map((s, i) => (
               <div
                 key={i}
                 className="search-suggestion-item"
-                onMouseDown={() => handleSelect(sugg)}
+                onMouseDown={() => handleSelect(s)}
               >
-                {sugg}
+                {s}
               </div>
             ))
           ) : (
