@@ -24,6 +24,7 @@ export default function Home() {
     
     // when the user submits a new search
     const handleSearch = async (term) => {
+        if (!term.trim()) return;   // ignore empty searches 
         setSearchTerm(term);
         try {
             const res = await fetch(
