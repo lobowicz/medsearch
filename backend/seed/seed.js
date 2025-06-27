@@ -82,9 +82,9 @@ async function seed() {
     await client.query('BEGIN');
 
     // 1) Clear existing data 
-    console.log('Clearing existing data...');
-    await client.query('TRUNCATE pharmacy_drugs, pharmacies, drugs RESTART IDENTITY CASCADE;');
-    console.log('Tables cleared');
+    // console.log('Clearing existing data...');
+    // await client.query('TRUNCATE pharmacy_drugs, pharmacies, drugs RESTART IDENTITY CASCADE;');
+    // console.log('Tables cleared');
 
     // 2) Load drugs
     console.log('Loading drugs...');
