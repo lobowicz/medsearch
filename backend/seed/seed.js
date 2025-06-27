@@ -78,13 +78,29 @@ async function seed() {
     await client.connect();
     console.log('Database connected');
 
-    // Start transaction for data integrity
-    await client.query('BEGIN');
-
+    // Ensure PostGIS extension and tables exist
+    await client.query(`CREATE EXTENSION IF NOT EXISTS postgis;`);
+    await client.query(`CREATE TABLE IF NOT EXISTS drugs(
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        synonyms TEXT[]
+      );`);
+    await client.query(`CREATE TABLE IF NOT EXISTS pharmacies(
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        address TEXT,
+        region TEXT,
+        geom GEOGRAPHY(Point, 4326)
+      );`);
+    await query.client(`CREATE TABLE IF NOT EXISTS pharmacy_drugs(
+        pharmacy_id INTEGER REFERENCES pharmacies(id),
+        drug_id INTEGER REFERENCES drugs(id)
+      );`);
+      
     // 1) Clear existing data 
-    // console.log('Clearing existing data...');
-    // await client.query('TRUNCATE pharmacy_drugs, pharmacies, drugs RESTART IDENTITY CASCADE;');
-    // console.log('Tables cleared');
+    console.log('Clearing existing data...');
+    await client.query('TRUNCATE pharmacy_drugs, pharmacies, drugs RESTART IDENTITY CASCADE;');
+    console.log('Tables cleared');
 
     // 2) Load drugs
     console.log('Loading drugs...');
@@ -127,7 +143,7 @@ async function seed() {
     }
     console.log(`Loaded ${validDrugs.length} drugs to database (skipped ${skippedDrugs})`);
 
-    // 3) Check pharmacy table structure first
+    // 3a) Check pharmacy table structure first
     console.log('Checking pharmacy table structure...');
     const pharmColumns = await client.query(`
       SELECT column_name 
@@ -141,7 +157,7 @@ async function seed() {
     const hasRegionColumn = availableColumns.includes('region');
     console.log('Has region column:', hasRegionColumn);
 
-    // 3) Load pharmacies
+    // 3b) Load pharmacies
     console.log('Loading pharmacies...');
     const pharmRows = await loadCsv('pharmacies.csv');
     const validPharmacies = [];
