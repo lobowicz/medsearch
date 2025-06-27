@@ -66,7 +66,12 @@ async function batchInsert(client, query, data, batchSize = 1000) {
 
 async function seed() {
   // Create client - automatically uses environment variables
-  const client = new Client();
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
 
   try {
     console.log('Connecting to database...');

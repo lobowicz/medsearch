@@ -12,7 +12,9 @@ app.use(express.json());
 // 1) Set up PostgreSQL connection pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  
+  ssl: {
+      rejectUnauthorized: false
+    }
 });
 
 // 2) API route: GET /api/search
