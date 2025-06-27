@@ -10,7 +10,10 @@ app.use(cors());
 app.use(express.json());
 
 // 1) Set up PostgreSQL connection pool
-const pool = new Pool();
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  
+});
 
 // 2) API route: GET /api/search
 app.get('/api/search', async (req, res) => {
