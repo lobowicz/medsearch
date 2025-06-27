@@ -37,8 +37,7 @@ app.get('/api/search', async (req, res) => {
       WITH matched_drugs AS (
         SELECT id, name
         FROM drugs
-        WHERE to_tsvector('english', drugs_search_text(name, synonyms))
-              @@ plainto_tsquery($1)
+        WHERE to_tsvector('english', name) @@ plainto_tsquery($1)
       )
       SELECT
         p.id            AS pharmacy_id,
