@@ -366,11 +366,11 @@ async function seed() {
 // Run seeder
 seed()
   .then(() => {
-    console.log('\n✅ Seeding completed successfully!');
+    console.log('\nSeeding completed successfully!');
     process.exit(0);
   })
   .catch(err => {
-    console.error('❌ Seeding failed:', err);
+    console.error('Seeding failed:', err);
     process.exit(1);
   });
   
