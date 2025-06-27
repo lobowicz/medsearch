@@ -60,7 +60,7 @@ export default function Home() {
                     
                     <p className="info-text">
                         Search the name of a medicine and MedSearch will identify and highlight nearby pharmacies that
-                        stock your drug AND accept Ghana’s National Health Insurance (NHIS) card for prescriptions. 
+                        stock the drug AND accept Ghana’s National Health Insurance (NHIS) card for prescriptions. 
                         <br></br>
                         Adjust the search radius to your preference. 
                         <br></br>

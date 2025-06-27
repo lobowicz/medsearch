@@ -17,7 +17,7 @@ dotenv.config();
 function loadCsv(filename) {
   return new Promise((resolve, reject) => {
     const results = [];
-    const filePath = path.join(__dirname, '../../data', filename);
+    const filePath = path.join(__dirname, '../data', filename);
     
     console.log(`Loading CSV: ${filePath}`);
     
