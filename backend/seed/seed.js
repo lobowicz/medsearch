@@ -92,7 +92,7 @@ async function seed() {
         region TEXT,
         geom GEOGRAPHY(Point, 4326)
       );`);
-    await query.client(`CREATE TABLE IF NOT EXISTS pharmacy_drugs(
+    await client.query(`CREATE TABLE IF NOT EXISTS pharmacy_drugs(
         pharmacy_id INTEGER REFERENCES pharmacies(id),
         drug_id INTEGER REFERENCES drugs(id)
       );`);
