@@ -76,7 +76,7 @@ async function seed() {
     // Start transaction for data integrity
     await client.query('BEGIN');
 
-    // 1) Clear existing data (optional - comment out if you want to keep existing data)
+    // 1) Clear existing data 
     console.log('Clearing existing data...');
     await client.query('TRUNCATE pharmacy_drugs, pharmacies, drugs RESTART IDENTITY CASCADE;');
     console.log('Tables cleared');
