@@ -101,10 +101,7 @@
 .info-logo span {
   font-size: 1.75rem;
   font-weight: bold;
-  background: linear-gradient(135deg, #4285f4, #34a853);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #000;
 }
 
 .info-text {
